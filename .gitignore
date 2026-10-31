@@ -1,0 +1,17 @@
+node_modules/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+.env*
+!.env.example
+*.tsbuildinfo
+.DS_Store
+.tmp/
+credentials.json
+token.json
+brag-output*/
+.playwright-mcp/
+.agents/skills/
+.claude/skills/

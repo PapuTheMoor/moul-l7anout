@@ -1,0 +1,3 @@
+# Project adapter. Intentionally no model, permissions, or MCP overrides.
+# Inherit the user's existing Codex configuration.
+# Shared product knowledge belongs in docs/, not this file.
