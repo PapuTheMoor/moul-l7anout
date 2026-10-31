@@ -32,7 +32,13 @@ export type RepaymentProposal = ProposalBase & Readonly<{
   customerId: string;
   amountCentimes: number;
 }>;
-export type TransactionProposal = SaleProposal | RepaymentProposal;
+export type CustomerProposal = ProposalBase & Readonly<{
+  kind: "customer";
+  name: string;
+}>;
+export type TransactionProposal = SaleProposal | RepaymentProposal | CustomerProposal;
+export type VoiceCommand = "confirm" | "cancel" | "undo" | "reset" | "show_customers" | "show_products" | "show_activity" | "show_capture" | "language_ar" | "language_fr" | "engine_local" | "engine_openai";
+export type Interpretation = Readonly<{ type: "proposal"; proposal: TransactionProposal }> | Readonly<{ type: "command"; command: VoiceCommand }>;
 export type RecordedLine = Readonly<{ productId: string; quantity: number; unitPriceCentimes: number }>;
 
 export type RecordedTransaction = Readonly<{

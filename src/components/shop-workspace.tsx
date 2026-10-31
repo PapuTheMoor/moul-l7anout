@@ -8,7 +8,7 @@ import { CaptureStudio } from "./capture-studio";
 import { ProposalCard } from "./proposal-card";
 import { CustomerLedger, ProductShelf, RecentActivity } from "./shop-panels";
 import { AnimatedMoney, physicalSpring } from "./animated-money";
-import { LanguageContext, useLanguage, type Language } from "./language";
+import { LanguageContext, localizedMessage, useLanguage, type Language } from "./language";
 
 const navigation = [
   { id: "overview", label: "Vue d’ensemble", icon: LayoutDashboard },
@@ -19,6 +19,18 @@ const navigation = [
 
 export function ShopWorkspace(props: ShopWorkspaceProps) {
   const [language, setLanguage] = useState<Language>("ar");
+  useEffect(() => {
+    document.documentElement.lang = language;
+    document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+  }, [language]);
+  useEffect(() => {
+    function changeLanguage(event: Event) {
+      const requested = (event as CustomEvent<unknown>).detail;
+      if (requested === "ar" || requested === "fr") setLanguage(requested);
+    }
+    window.addEventListener("moul7anout:language", changeLanguage);
+    return () => window.removeEventListener("moul7anout:language", changeLanguage);
+  }, []);
   return <LanguageContext.Provider value={language}><WorkspaceContent {...props} language={language} setLanguage={setLanguage} /></LanguageContext.Provider>;
 }
 
@@ -46,7 +58,7 @@ function WorkspaceContent(props: ShopWorkspaceProps & { language: Language; setL
       </aside>
 
       <main className="main-workspace" id="overview">
-        <header className="topbar"><div className="breadcrumb"><span>{t("Mon hanout", "حانوتي")}</span><span>/</span><strong>{t("Le carnet", "الدفتر")}</strong></div><div className="topbar-right"><div className="language-switch" role="group" aria-label="Langue / اللغة"><button type="button" aria-pressed={props.language === "ar"} onClick={() => props.setLanguage("ar")}>الدارجة</button><button type="button" aria-pressed={props.language === "fr"} onClick={() => props.setLanguage("fr")}>FR</button></div><span className="demo-badge"><span /> {t("Données de démonstration", "بيانات تجريبية")}</span><span className="owner-avatar" aria-label={t("Compte de démonstration", "حساب تجريبي")}>M</span></div></header>
+        <header className="topbar"><div className="breadcrumb"><span>{t("Mon hanout", "حانوتي")}</span><span>/</span><strong>{t("Le carnet", "الدفتر")}</strong></div><div className="topbar-right"><div className="language-switch" role="group" aria-label="Langue / اللغة"><button type="button" aria-pressed={props.language === "ar"} onClick={() => props.setLanguage("ar")}>الدارجة</button><button type="button" aria-pressed={props.language === "fr"} onClick={() => props.setLanguage("fr")}>Français</button></div><span className="demo-badge"><span /> {t("Données de démonstration", "بيانات تجريبية")}</span><span className="owner-avatar" aria-label={t("Compte de démonstration", "حساب تجريبي")}>M</span></div></header>
         <div className="workspace-content">
           <section className="hero-heading" aria-labelledby="page-heading"><div><h1 id="page-heading">{t("Votre hanout,", "حانوتك،")} <em>{t("l’esprit tranquille.", "وراحة بالك.")}</em></h1><p>{t("Parlez comme toujours. Gardez les comptes autrement.", "هضر كيف ديما، وخلي حساباتك واضحة.")}</p></div><span className="date-note"><CalendarDays size={17} aria-hidden="true" />{date}</span></section>
 
@@ -61,8 +73,8 @@ function WorkspaceContent(props: ShopWorkspaceProps & { language: Language; setL
           <div className="main-columns">
             <div className="capture-column">
               <CaptureStudio {...props} />
-              <div className="workspace-live-region" aria-live="polite" aria-atomic="true">{props.notice && <motion.div className={`notice-banner ${completed ? "is-complete" : ""}`} key={props.notice} initial={reducedMotion ? false : { opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={reducedMotion ? { duration: 0.12, ease: "linear" } : physicalSpring}>{completed ? <Check size={19} aria-hidden="true" /> : <ShieldCheck size={18} aria-hidden="true" />}<span>{props.notice}</span></motion.div>}</div>
-              {props.error && <div className="error-banner" role="alert"><CircleHelp size={19} aria-hidden="true" /><div><strong>{t("On reprend tranquillement.", "نعاودو بشوية.")}</strong><span>{props.error}</span></div></div>}
+              <div className="workspace-live-region" aria-live="polite" aria-atomic="true">{props.notice && <motion.div className={`notice-banner ${completed ? "is-complete" : ""}`} key={props.notice} initial={reducedMotion ? false : { opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={reducedMotion ? { duration: 0.12, ease: "linear" } : physicalSpring}>{completed ? <Check size={19} aria-hidden="true" /> : <ShieldCheck size={18} aria-hidden="true" />}<span dir="auto">{localizedMessage(props.notice, props.language)}</span></motion.div>}</div>
+              {props.error && <div className="error-banner" role="alert"><CircleHelp size={19} aria-hidden="true" /><div><strong>{t("On reprend tranquillement.", "نعاودو بشوية.")}</strong><span dir="auto">{localizedMessage(props.error, props.language)}</span></div></div>}
             </div>
             <div className="ledger-column"><AnimatePresence initial={false}>{props.proposal && <ProposalCard key={props.proposal.id} {...props} />}</AnimatePresence><CustomerLedger {...props} /></div>
           </div>

@@ -5,13 +5,13 @@ const fail = (error: string): DomainResult<TransactionProposal> => ({ ok: false,
 const arabicCustomers: Record<string, string> = { ahmed: "احمد", fatima: "فاطمة", youssef: "يوسف" };
 const productWords: Record<string, readonly string[]> = { milk: ["حليب", "الحليب", "للحليب"], bread: ["خبز", "الخبز"], water: ["ماء", "الماء"], sugar: ["سكر", "السكر"], tea: ["شاي", "اتاي", "اتاي"] };
 const quantityWords: Record<string, number> = { wa7ed: 1, wahed: 1, wahd: 1, un: 1, une: 1, واحد: 1, وحدة: 1, jouj: 2, juj: 2, deux: 2, جوج: 2, tlata: 3, trois: 3, ثلاثة: 3, rb3a: 4, quatre: 4, ربعة: 4, khmsa: 5, cinq: 5, خمسة: 5 };
-const contains = (text: string, word: string) => text.split(/[\s,;:!?]+/).includes(normalize(word));
+const contains = (text: string, word: string) => ` ${text.replace(/[\s,;:!?]+/g, " ")} `.includes(` ${normalize(word).replace(/\s+/g, " ")} `);
 
 function hasUnknownSaleWords(text: string, state: ShopState): boolean {
   const grammar = "khda khdat b3t b3na vendu vente achete pris a au le la les du de des et un une cash comptant especes credit kredi lcredit mazal makhlessch makhless ma khlessch خدا خذات باع بعت بالكريدي كريدي مازال ماخلصش نقدا نقد كاش".split(" ");
   const known = new Set([
     ...grammar, ...Object.keys(quantityWords), ...Object.values(arabicCustomers),
-    ...state.customers.flatMap(c => [normalize(c.id), normalize(c.name)]),
+    ...state.customers.flatMap(c => [normalize(c.id), ...normalize(c.name).split(/\s+/)]),
     ...state.products.flatMap(p => [normalize(p.name), ...p.aliases.map(normalize), ...(productWords[p.id] || []).map(normalize)]),
   ]);
   return text.split(/[\s,;:!?]+/).some(word => word && !/^\d+$/.test(word) && !known.has(word));
@@ -19,7 +19,7 @@ function hasUnknownSaleWords(text: string, state: ShopState): boolean {
 
 function repayment(input: CaptureInput, text: string, customerId: string | undefined, state: ShopState): DomainResult<TransactionProposal> {
   if (!customerId) return fail("Précisez un client connu pour le remboursement.");
-  const known = new Set(["khlles", "khless", "khelles", "a", "paye", "rembourse", "remboursement", "dirham", "dirhams", "dh", "mad", "خلص", "سدد", "درهم", "دراهم", ...Object.values(arabicCustomers), ...state.customers.flatMap(c => [normalize(c.id), normalize(c.name)])]);
+  const known = new Set(["khlles", "khless", "khelles", "a", "paye", "rembourse", "remboursement", "dirham", "dirhams", "dh", "mad", "خلص", "سدد", "درهم", "دراهم", ...Object.values(arabicCustomers), ...state.customers.flatMap(c => [normalize(c.id), ...normalize(c.name).split(/\s+/)])]);
   const unknownWords = text.split(/[\s;:!?]+/).some(word => word && !/^\d+(?:[.,]\d{1,2})?$/.test(word) && !known.has(word));
   if ((text.match(/\d+(?:[.,]\d+)?/g) || []).length !== 1 || unknownWords) return fail("Le mode exemples comprend un remboursement et un montant par phrase.");
   const amount = text.match(/(?:^|\s)(\d+(?:[.,]\d{1,2})?)(?=\s*(?:dirham|dh|mad|درهم|دراهم|$))/);
@@ -32,7 +32,7 @@ function repayment(input: CaptureInput, text: string, customerId: string | undef
 export function parseLocal(input: CaptureInput, state: ShopState): DomainResult<TransactionProposal> {
   const text = normalize(input.text);
   if (!text || text.length > 1000 || !input.id) return fail("Écrivez une phrase courte pour votre carnet.");
-  const creation = input.text.trim().match(/^(?:زيد|اضف|أضف|ajouter|ajoute|zid)\s+(?:زبون|عميل|client)\s+([\p{L}\p{M}][\p{L}\p{M}\s'’.-]{0,79})$/iu);
+  const creation = input.text.trim().match(/^(?:زيد|اضف|أضف|ajouter|ajoute|zid)\s+(?:(?:un|une)\s+)?(?:(?:nouveau|nouvelle)\s+)?(?:زبون(?:ة)?|عميل(?:ة)?|client(?:e)?)\s+(?:(?:جديد|جديدة)\s+)?(?:(?:سميتو|سميتها|اسمو|اسمها)\s+)?([\p{L}\p{M}][\p{L}\p{M}\s'’.-]{0,79})$/iu);
   if (creation) return { ok: true, value: { id: input.id, originalInput: input.text, source: input.source, kind: "customer", name: creation[1].trim().replace(/\s+/g, " ") } };
   const customers = state.customers.filter(c => contains(text, c.name) || contains(text, c.id) || contains(text, arabicCustomers[c.id] || c.id));
   if (customers.length > 1) return fail("Précisez un seul client par opération.");

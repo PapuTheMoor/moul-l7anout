@@ -3,17 +3,19 @@
 Preparation: reset the sample shop, verify milk stock 24 and Ahmed balance 35 MAD. Close unrelated tabs. Keep typed input available. Label the shop and all seeded records as demo data.
 
 - 0–10s: "A shopkeeper sells all day. Remembering who paid and who still owes money is another job."
-- 10–20s: record or type `Ahmed khda jouj l7lib, mazal makhlessch` in OpenAI mode. Stop recording, review the transcript, then click Comprendre l’opération. Rehearse microphone permission and a real Darija voice on this device first.
-- 20–35s: show customer, milk x2, catalog price 7 MAD, total 14 MAD, credit. "Nothing changes until I check it."
-- 35–45s: confirm. Point to stock24 ->22, Ahmed35 ->49 MAD, cash unchanged.
-- 45–60s: enter Ahmed khlles49dirham or use Remboursement, review and confirm. Ahmed is Réglé, cash49 MAD, sales remain14 MAD.
-- 60–70s: undo repayment. Ahmed returns to49 MAD; stock remains22. "A mistake is reversible."
+- 10–20s: tap the microphone, say `زيد زبونة جديدة سميتها خديجة`, and tap again to stop. Review the customer proposal, then tap the microphone and say `أكد`. The new customer is added only after confirmation. Rehearse the exact utterance and microphone permission on this device first.
+- 20–35s: speak a credit sale for the new customer, for example `خديجة خذات جوج حليب كريدي`. Show the customer, milk x2, catalog price 7 MAD, total 14 MAD, credit. "Nothing changes until I check it."
+- 35–45s: say `أكد` or use the confirm button. Point to stock24 ->22, Khadija's balance 0 ->14 MAD, cash unchanged.
+- 45–60s: record and confirm Khadija's repayment of 14 MAD. Her balance becomes zero; cash increases by 14 MAD.
+- 60–70s: say `تراجع` to undo the repayment. Khadija's balance returns to 14 MAD; stock remains22. "A mistake is reversible."
 - 70–75s: "OpenAI understands the words. The shopkeeper confirms. Code keeps the accounts. Next, we test this with real shopkeepers."
 
 Fallback: if microphone fails, use typed input. If quota/network fails, select Exemples locaux and use a supported example. Do not describe sample text as live recognition or local parsing as OpenAI.
 Before presenting: rehearse the same flow twice, check both desktop and narrow viewport, and verify reload persistence once.
 
 ## Brag launch video — generated and verified
+
+The checked-in video is an earlier French-interface demo; it predates the Arabic and new-customer features and should not be presented as the current voice flow.
 
 Deliverables: `brag-output/brag.mp4` (20seconds,1080p,30fps), `brag-output/brag.jpg` poster, `brag-output/share-copy.txt` with required music/SFX credits. Actual UI and faithful animated transaction cards; not a recorded live microphone session. Hyperframes check passes with0 errors and9 non-blocking craft/structure warnings; see brag-output/verification.md. Poster is baked into frame0. Nothing published.
 

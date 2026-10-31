@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const upload = new FormData();
     upload.append("file", file, `enregistrement.${extension}`);
     upload.append("model", process.env.OPENAI_AUDIO_MODEL || "gpt-transcribe");
-    upload.append("prompt", "Moroccan Darija shop: Ahmed, Fatima, Youssef, l7lib, khobz, lma, sokkar, atay. Preserve the spoken amounts and names.");
+    upload.append("prompt", "Natural Moroccan Darija for a neighborhood shop, including Arabic, French or mixed speech. Preserve spoken customer names, amounts, product names and commands. Write Arabic words in Arabic script when appropriate.");
     const result = await callOpenAI("audio/transcriptions", upload);
     if (typeof result.text !== "string" || !result.text.trim() || result.text.length > 1000) throw new ApiError("INVALID_AUDIO", "La transcription est vide ou trop longue. Réessayez avec une phrase courte.", 422);
     return Response.json({ success: true, data: { text: result.text.trim() } }, { headers: { "Cache-Control": "no-store" } });

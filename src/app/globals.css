@@ -136,3 +136,16 @@ strong { font-weight: 600; }
 .brand-subtitle, .sidebar-footer, .metric-card p, .count-badge, .customer-details>span, .sidebar-help, .reset-button, .demo-badge, .metric-label, .engine-indicator, .voice-label .audio-disclosure, .input-caption>span, .unit-price, .proposal-total small, .activity-amount>span { font-size: 12px; }
 .brand { font-size: 23px; gap: 8px; }.brand>svg { width: 24px; height: 24px; }
 @media (max-width:600px) { .brand { font-size: 24px; } }
+
+/* Language control stays visible on both the compact and full layouts. */
+.language-switch { display: flex; align-items: center; padding: 3px; border: 1px solid #c9d1bd; border-radius: 999px; background: #fffdf5; direction: rtl; }
+.language-switch button { min-height: 32px; min-width: 37px; padding: 4px 9px; border-radius: 999px; background: transparent; color: var(--green); font-size: 12px; }
+.language-switch button[aria-pressed="true"] { background: var(--green); color: #fffdf5; }
+.voice-help { margin-top: 12px; color: #d5e1cd; font-size: 12px; line-height: 1.6; }
+.shop-workspace[dir="rtl"] { font-family: Arial, sans-serif; }
+.shop-workspace[dir="rtl"] h1, .shop-workspace[dir="rtl"] h2, .shop-workspace[dir="rtl"] .sidebar-story p { font-family: Arial, sans-serif; letter-spacing: 0; line-height: 1.35; }
+.shop-workspace[dir="rtl"] .sidebar-help, .shop-workspace[dir="rtl"] .reset-button { text-align: right; }
+.shop-workspace[dir="rtl"] .sidebar-help svg:last-child { margin-left: 0; margin-right: auto; }
+.shop-workspace[dir="rtl"] .brand { direction: ltr; }
+.shop-workspace[dir="rtl"] input[type="number"] { direction: ltr; text-align: center; }
+@media (max-width:600px) { .topbar-right { gap: 6px; } .language-switch button { min-height: 32px; padding: 4px 7px; } }

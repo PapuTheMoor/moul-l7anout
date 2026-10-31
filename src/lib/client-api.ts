@@ -1,4 +1,4 @@
-import type { CaptureInput, ShopState, TransactionProposal } from "@/domain/types";
+import type { CaptureInput, Interpretation, ShopState, TransactionProposal, VoiceCommand } from "@/domain/types";
 import { validateProposal } from "@/domain/validation";
 
 async function payload(response: Response): Promise<Record<string, unknown>> {
@@ -13,15 +13,18 @@ async function payload(response: Response): Promise<Record<string, unknown>> {
   return value.data as Record<string, unknown>;
 }
 
-export async function interpretInput(input: CaptureInput, state: ShopState, signal: AbortSignal): Promise<TransactionProposal> {
+const commands: readonly VoiceCommand[] = ["confirm", "cancel", "undo", "reset", "show_customers", "show_products", "show_activity", "show_capture", "language_ar", "language_fr", "engine_local", "engine_openai"];
+
+export async function interpretInput(input: CaptureInput, state: ShopState, signal: AbortSignal, draft?: TransactionProposal | null, locale: "ar" | "fr" = "fr"): Promise<Interpretation> {
   const response = await fetch("/api/interpret", {
     method: "POST", headers: { "Content-Type": "application/json" }, signal,
-    body: JSON.stringify({ ...input, balances: Object.fromEntries(state.customers.map((c) => [c.id, c.balanceCentimes])) }),
+    body: JSON.stringify({ ...input, customers: state.customers, draft: draft ?? null, locale }),
   });
   const data = await payload(response);
+  if (typeof data.command === "string" && commands.includes(data.command as VoiceCommand)) return { type: "command", command: data.command as VoiceCommand };
   const proposal = validateProposal(data.proposal);
   if (!proposal.ok || proposal.value.id !== input.id) throw new Error("L'opération reçue est invalide. Reformulez votre phrase.");
-  return proposal.value;
+  return { type: "proposal", proposal: proposal.value };
 }
 
 export async function transcribeAudio(audio: Blob, signal: AbortSignal): Promise<string> {

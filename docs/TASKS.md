@@ -2,7 +2,17 @@
 
 Current development mode: Codex only. All implementation, design, integration, and demo tasks belong to Codex. Claude Code is inactive.
 
+## Arabic Darija, spoken actions and new customers
+
+In progress: customer creation and ledger validation — Codex domain worker owns src/domain/** and tests/unit/**, excluding shared types. Arabic/French UI and RTL — Codex UI worker owns src/components/**, src/app/globals.css and src/i18n/**. OpenAI interpretation/context — Codex API worker owns src/lib/server/interpret.ts, src/lib/client-api.ts, transcribe route and matching integration tests. Parent owns shared types, voice command recognition/controller, documentation and end-to-end integration. Do not edit another owner's paths without coordination.
+
+Contract: a customer proposal is `{kind: "customer", id, originalInput, source, name}`. Confirmation creates `customer-${id}` with zero debt and a recorded event; undo reverses it. Voice commands include confirm, cancel, undo, reset with separate confirmation, navigation, language and engine switch. The microphone is user-initiated. Audio and text use the provided server-side OpenAI key; voice previews remain editable and require explicit confirmation.
+
 ## Frontend refinement requested after the first build
+
+Current parallel follow-up: Codex voice E2E worker owns `tests/e2e/**` for Arabic customer creation and spoken confirmation verification; other workers must not edit those paths until released.
+
+Arabic and voice follow-up: customer creation is a confirmed, undoable ledger event; customer lists passed to interpretation include newly added customers. Arabic Darija is the default interface, with French available. Recorded utterances are interpreted automatically, and supported spoken commands include confirmation, cancellation, undo, navigation, language switching and a two-step reset. Recording still requires tapping start and stop. A failed correction clears the previous draft; interrupted resets expire. Verified 107 unit/integration tests and 95.43% domain statement coverage, TypeScript and lint. The updated microphone journey uses mocked transcription in browser tests; a new live OpenAI run was not approved by automatic review because it may consume credits. The prior Brag video predates the Arabic/customer updates and should not be presented as an up-to-date recording.
 
 Complete: applied the user-invoked Impeccable, UI/UX Pro Max and Apple Design skills to the existing frontend. Prominent voice counter, adjacent review, readable type/targets and interruptible springs. Parent completed one initial batched inspection, one correction batch and one confirmation pass; four browser regressions pass and fresh source review found no blockers. All71 unit/integration tests, lint, types and production build pass after refinement. Details: docs/FRONTEND-REVIEW.md. Demo video and poster refreshed to match the final interface.
 

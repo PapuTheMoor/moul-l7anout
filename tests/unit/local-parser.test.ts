@@ -8,6 +8,8 @@ describe("explicit local example parser", () => {
   it("offers a customer creation proposal for Arabic Darija and latin examples", () => {
     expect(parse("زيد زبون سارة")).toEqual({ ok: true, value: { id: "draft-1", source: "sample", originalInput: "زيد زبون سارة", kind: "customer", name: "سارة" } });
     expect(parse("ajouter client Sara")).toEqual({ ok: true, value: { id: "draft-1", source: "sample", originalInput: "ajouter client Sara", kind: "customer", name: "Sara" } });
+    expect(parse("زيد زبون جديد سميتو ياسين")).toMatchObject({ ok: true, value: { kind: "customer", name: "ياسين" } });
+    expect(parse("Ajoute un nouveau client Yassine")).toMatchObject({ ok: true, value: { kind: "customer", name: "Yassine" } });
   });
   it("recognizes an added multi-word customer in a local sale and repayment", () => {
     const state = { ...SAMPLE_SHOP, customers: [...SAMPLE_SHOP.customers, { id: "customer-new", name: "سارة العلوي", balanceCentimes: 1400 }] };

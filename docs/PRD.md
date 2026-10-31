@@ -12,7 +12,7 @@ Primary job: record a sale or customer credit without losing track of stock or b
 
 ## Product promise
 
-Say it. Check it. Record it.
+Say it. Check it. Record it. The interface defaults to Arabic Darija and can be switched to French.
 The app turns spoken or typed Darija into an editable transaction proposal with OpenAI. The shopkeeper confirms before business state changes. Prices and arithmetic come from deterministic code. Local example mode is visibly labeled and never impersonates an AI response.
 
 ## Hero journey
@@ -30,7 +30,9 @@ The app turns spoken or typed Darija into an editable transaction proposal with 
 - Five sample products, three customers, MAD currency, and visible sample-data label.
 - Typed input plus one-click sample phrases; always distinguish sample text from actual recording.
 - OpenAI structured extraction against the five-product catalog; clarify unknown products/customers rather than guessing. Typed text remains available.
-- Microphone recording -> transcription -> editable transcript -> interpretation. Cap recording at30 seconds /10 MB; clean up tracks on all paths.
+- Microphone recording -> transcription -> automatic interpretation -> review. Speak an explicit confirmation to save, or edit and confirm on screen. Tap the microphone to start and stop each utterance; this is not an always-listening assistant. Cap recording at30 seconds /10 MB; clean up tracks on all paths.
+- Create a new customer from a spoken or typed request, review the name, and explicitly confirm before adding them. Newly added customers can be selected for credit sales and repayments.
+- Support spoken confirm, cancel, undo, navigation and language switching. A spoken reset requires a second explicit confirmation.
 - Explicitly labeled local parser for the supported credit, cash-sale and repayment examples.
 - Editable transaction preview, confirm, and undo of the latest transaction.
 - Stock and customer-credit updates; separate sales value from cash received.
@@ -55,7 +57,7 @@ Document scanning/Fhemni, receipt printing, authentication, cloud sync, payments
 - No state changes during input parsing or preview editing.
 - Confirm must be idempotent for a proposal ID, including double-clicks.
 - Reject non-positive or fractional quantities; reject unknown IDs and excess stock.
-- Credit requires an explicit known customer; never silently create a debtor.
+- Credit requires an explicit known customer; never silently create a debtor. Customer creation itself requires an explicit, separately confirmed proposal.
 - Apply stock, sales, and balances atomically with immutable state.
 - Aggregate duplicate product lines; prevent duplicate IDs and stale AI responses. Retain recorded unit prices.
 - Reject damaged stored state and explain how to reset; do not silently invent a recovery.

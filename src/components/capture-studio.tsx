@@ -14,6 +14,7 @@ const examples = [
 
 export function CaptureStudio(props: ShopWorkspaceProps) {
   const { language, t } = useLanguage();
+  const demoOnly = process.env.NEXT_PUBLIC_DEMO_ONLY === "1";
   const disabled = props.busy || !props.hydrated;
   const reducedMotion = useReducedMotion();
   return (
@@ -28,14 +29,14 @@ export function CaptureStudio(props: ShopWorkspaceProps) {
         <div className="voice-label">
           <strong>{props.recording ? t("Je vous écoute…", "كنسمع ليك…") : t("B darija, comme au hanout.", "بالدارجة، كيف فالحانوت.")}</strong>
           <span>{props.recording ? t("Appuyez pour terminer · 30 secondes maximum", "ضغط باش تسالي · حتى لـ ٣٠ ثانية") : t("Appuyez, parlez. Vous gardez le dernier mot.", "ضغط وهضر، والتأكيد ديما عندك.")}</span>
-          <span className="audio-disclosure">{t("Transcription audio via OpenAI", "تحويل الصوت لنص عبر OpenAI")}</span>
+          <span className="audio-disclosure">{demoOnly ? t("Démo sans clé : saisie écrite et exemples locaux", "نسخة تجريبية بلا مفتاح: كتب أو جرب الأمثلة المحلية") : t("Transcription audio via OpenAI", "تحويل الصوت لنص عبر OpenAI")}</span>
         </div>
         <motion.button
           type="button"
           className={`mic-button ${props.recording ? "is-recording" : ""}`}
           onClick={props.onRecordingToggle}
-          disabled={disabled || !props.canRecord}
-          tabIndex={disabled || !props.canRecord ? -1 : 0}
+          disabled={disabled || !props.canRecord || demoOnly}
+          tabIndex={disabled || !props.canRecord || demoOnly ? -1 : 0}
           aria-label={props.recording ? t("Terminer l’enregistrement", "سالي التسجيل") : t("Enregistrer une opération en Darija", "سجل عملية بالدارجة")}
           aria-pressed={props.recording}
           title={props.canRecord ? t("Enregistrer en Darija", "سجل بالدارجة") : t("Microphone indisponible : utilisez le texte", "الميكرو ما خدامش، كتب بلاصتو")}
@@ -53,7 +54,7 @@ export function CaptureStudio(props: ShopWorkspaceProps) {
 
       <div className="capture-actions">
         <div className="engine-switch" role="group" aria-label={t("Mode d’interprétation", "طريقة الفهم")}>
-          <button type="button" className={props.engine === "openai" ? "selected" : ""} aria-pressed={props.engine === "openai"} disabled={disabled || props.recording} onClick={() => props.onEngineChange("openai")}><Sparkles size={14} aria-hidden="true" /> OpenAI</button>
+          <button type="button" className={props.engine === "openai" ? "selected" : ""} aria-pressed={props.engine === "openai"} disabled={disabled || props.recording || demoOnly} onClick={() => props.onEngineChange("openai")}><Sparkles size={14} aria-hidden="true" /> OpenAI</button>
           <button type="button" className={props.engine === "local" ? "selected" : ""} aria-pressed={props.engine === "local"} disabled={disabled || props.recording} onClick={() => props.onEngineChange("local")}>{t("Exemples locaux", "أمثلة محلية")}</button>
         </div>
         <motion.button type="button" className="primary-button interpret-button" disabled={disabled || props.recording || !props.text.trim()} tabIndex={disabled || props.recording || !props.text.trim() ? -1 : 0} onClick={props.onInterpret} whileTap={reducedMotion ? undefined : { scale: 0.98 }} transition={physicalSpring}>
@@ -64,7 +65,7 @@ export function CaptureStudio(props: ShopWorkspaceProps) {
       </div>
 
       <div className="example-section"><span className="example-label">{t("Essayez avec un exemple de saisie", "جرب بمثال مكتوب")}</span><div className="example-buttons">{examples.map((example) => <button type="button" key={example.label} aria-label={t(example.label, ({"Achat à crédit":"شراء بالكريدي", "Vente comptant":"بيعة بالكاش", "Remboursement":"خلاص"} as Record<string, string>)[example.label])} onClick={() => props.onExample(example.text)} disabled={disabled || props.recording} title={example.text}>{t(example.label, ({"Achat à crédit":"شراء بالكريدي", "Vente comptant":"بيعة بالكاش", "Remboursement":"خلاص"} as Record<string, string>)[example.label])}<ArrowUpRight size={14} aria-hidden="true" /></button>)}<button type="button" onClick={() => props.onExample(language === "ar" ? "زيد زبون جديد سميتو ياسين" : "Ajoute un nouveau client Yassine")} disabled={disabled || props.recording}>{t("Nouveau client", "زبون جديد")}<ArrowUpRight size={14} aria-hidden="true" /></button></div></div>
-      <p className="voice-help">{t("À la voix : ajouter un client, enregistrer, confirmer, annuler, changer de langue ou naviguer.", "بالصوت: زيد زبون، سجل، أكد، رجع، بدل اللغة أو تنقل.")}</p>
+      <p className="voice-help">{demoOnly ? t("La voix et OpenAI seront disponibles après configuration d’une clé serveur.", "الصوت و OpenAI غادي يخدمو من بعد إعداد المفتاح فالخادم.") : t("Essayez à la voix : « ajoute Sarah », « confirme », « annule » ou « français ».", "جرب بالصوت: «زيد زبون سارة»، «أكد»، «تراجع»، «مسح الدفتر»، «خلص سارة ٢٠ درهم».")}</p>
       <p className="trust-caption"><Check size={15} aria-hidden="true" /> {t("Rien n’est enregistré sans votre confirmation.", "حتى حاجة ما كتتقيد حتى تأكدها.")}</p>
     </section>
   );

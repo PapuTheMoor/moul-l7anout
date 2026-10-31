@@ -1,0 +1,6 @@
+Parlez comme au hanout. Vérifiez, validez, et gardez les comptes clairs.
+
+Moul7anout — un prototype marocain qui transforme une phrase en Darija en vente ou remboursement à vérifier avant enregistrement. Démonstration avec données fictives.
+
+Music: Sascha Ende, ende.app (CC BY 4.0). “Happy Beats / Business Moves Vol.12”. Source: https://ende.app/en — license: https://creativecommons.org/licenses/by/4.0/
+Sound effects: Kenney.nl, CC0.
